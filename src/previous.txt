@@ -1,0 +1,32 @@
+     <div className="topnav">
+                <NavLink className={({ isActive }) => (isActive ? 'active' : '')}
+                    to="/">Home</NavLink>
+                <NavLink className={({ isActive }) => (isActive ? 'active' : '')}
+                    to="/blogs">Blogs</NavLink>
+                <NavLink className={({ isActive }) => (isActive ? 'active' : '')}
+                    to="/contact">Contact</NavLink>
+            </div>
+   /----
+   <NavBar />
+       {/* <Fruits fruits={mydata} /> */}
+        
+        {studentInfo.map((item, index)=>{
+          console.log(item)
+          return <div key={index}>
+          <h4>Name: {item.name}</h4>
+          <h5>Email: {item.email}</h5>
+          <h6>Subject: {item.subject.length === 0 ? "No subject" : item.subject.map((sub, ind)=><p key={ind}>{sub}</p>)}</h6>
+          </div>})}
+
+        {isLogin ? <div style={{ paddingLeft: "16px" }}>
+            <h2>Top Navigation Example</h2>
+            <p>Yes you are login</p>
+            <h2>{a1}</h2>
+            <h2>{b1}</h2>
+          </div>
+        : <div><h1>You are not log in</h1></div>
+        }
+        <br/>
+        <hr/>
+        <br/>
+        <MyClass />
