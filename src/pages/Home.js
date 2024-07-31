@@ -7,7 +7,7 @@ import Col from 'react-bootstrap/Col';
 
 export default function Home() {
   useDocumentTitle("Home page")
-  let [nvalue, setNValue] = useState(4)
+  //let [nvalue, setNValue] = useState(4)
   useEffect(() => {
     setTimeout(() => {
       setNValue(35);
