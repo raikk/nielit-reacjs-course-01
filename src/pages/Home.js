@@ -8,11 +8,11 @@ import Col from 'react-bootstrap/Col';
 export default function Home() {
   useDocumentTitle("Home page")
   //let [nvalue, setNValue] = useState(4)
-  useEffect(() => {
-    setTimeout(() => {
-      setNValue(35);
-    }, 3000)
-  }, [])
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setNValue(35);
+  //   }, 3000)
+  // }, [])
   return (
     <Container fluid="md">
       <Row className='my-4 px-4'>
@@ -22,11 +22,7 @@ export default function Home() {
           <p>Get the same random image every time based on a seed, by adding, Get the same random image every time based on a seed, by adding. Get the same random image every time based on a seed, by adding, Get the same random image every time based on a seed, by adding. Get the same random image every time based on a seed, by adding, Get the same random image every time based on a seed, by adding.</p>
           <h1><Badge bg="primary">Explore now</Badge></h1>
         </Col>
-        
       </Row>
-
-
-
       <Row>
         <Col md={4}>
           <Card >
