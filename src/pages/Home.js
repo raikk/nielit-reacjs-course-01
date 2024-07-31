@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import useDocumentTitle from './useDocumentTitle'
 import { Button, Image, Badge, Carousel, Card, Table } from 'react-bootstrap'
 import Container from 'react-bootstrap/Container';
