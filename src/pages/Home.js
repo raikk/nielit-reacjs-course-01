@@ -1,20 +1,76 @@
-import React from 'react'
+import React, { useEffect, useState, CSSProperties } from 'react'
 import useDocumentTitle from './useDocumentTitle'
 import { Button, Image, Badge, Carousel, Card, Table } from 'react-bootstrap'
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import ClipLoader from "react-spinners/ClipLoader";
+
+
 
 export default function Home() {
-  useDocumentTitle("Home page")
-  //let [nvalue, setNValue] = useState(4)
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setNValue(35);
-  //   }, 3000)
-  // }, [])
+  useDocumentTitle("Home page");
+
+ 
+  let [users, setUsers] = useState([])
+
+  let [loading, setLoader] = useState(true)
+
+  useEffect(() => {
+    fetch('https://66aa0588613eced4eba73a23.mockapi.io/api/users/user_list', {
+      method: 'GET',
+      headers: { 'content-type': 'application/json'},
+    }).then(res => {
+      if (res.ok) {
+        return res.json();
+      }
+      // handle error
+    }).then(tasks => {
+      //console.log("user list " + JSON.stringify(tasks))
+      setUsers(tasks)
+      setLoader(false)
+      // Do something with the list of tasks
+    }).catch(error => {
+      // handle error
+      setLoader(false)
+    })
+  }, [])
+
   return (
     <Container fluid="md">
+       <div className='display: flex;  
+    justify-content: center;  
+    align-items: center;'>
+        <ClipLoader
+        color={"blue"}
+        loading={loading}
+        cssOverride={{display: "block",
+          margin: "0 auto",
+          textAlign: 'center',
+          borderColor: "red"}}
+        size={150}
+        aria-label="Loading Spinner"
+        data-testid="loader"
+      /></div>
+      {users.length > 0 && <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Address</th>
+          </tr>
+        </thead>
+       
+        <tbody>
+          {users?.map((item, index) => <tr key={index}>
+            <td>{item.id}</td>
+            <td>{item.name}</td>
+            <td>{item.email}</td>
+            <td>{item.address}</td>
+          </tr>)}
+        </tbody>
+      </Table>}
       <Row className='my-4 px-4'>
         <Col md={6}><Image src="https://picsum.photos/700/300" fluid rounded /></Col>
         <Col md={6}>
@@ -23,6 +79,7 @@ export default function Home() {
           <h1><Badge bg="primary">Explore now</Badge></h1>
         </Col>
       </Row>
+
       <Row>
         <Col md={4}>
           <Card >
@@ -99,38 +156,10 @@ export default function Home() {
             </Card.Body>
           </Card>
         </Col>
-        </Row>
-        <Row className='my-5'>
-        <Table striped bordered hover>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Username</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>1</td>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>Jacob</td>
-          <td>Thornton</td>
-          <td>@fat</td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td colSpan={2}>Larry the Bird</td>
-          <td>@twitter</td>
-        </tr>
-      </tbody>
-    </Table>
-        </Row>
+      </Row>
+      <Row className='my-5'>
+
+      </Row>
     </Container>
   )
 }
