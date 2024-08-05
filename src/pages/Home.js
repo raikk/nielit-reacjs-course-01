@@ -1,6 +1,6 @@
 import React, { useEffect, useState, CSSProperties } from 'react'
 import useDocumentTitle from './useDocumentTitle'
-import { Button, Image, Badge, Carousel, Card, Table } from 'react-bootstrap'
+import { Button, Image, Badge, Carousel, Card, Table, Modal, InputGroup, Form, Alert } from 'react-bootstrap'
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -11,47 +11,147 @@ import ClipLoader from "react-spinners/ClipLoader";
 export default function Home() {
   useDocumentTitle("Home page");
 
- 
+
   let [users, setUsers] = useState([])
 
   let [loading, setLoader] = useState(true)
 
-  useEffect(() => {
-    fetch('https://66aa0588613eced4eba73a23.mockapi.io/api/users/user_list', {
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [address, setAddress] = useState("")
+  const [emessage, setErrorMessage] = useState("")
+
+  const getData = () =>{
+    fetch('https://66b08ccf6a693a95b53923eb.mockapi.io/api/users/user_list', {
       method: 'GET',
-      headers: { 'content-type': 'application/json'},
+      headers: { 'content-type': 'application/json' },
     }).then(res => {
       if (res.ok) {
         return res.json();
       }
       // handle error
-    }).then(tasks => {
+    }).then(data => {
       //console.log("user list " + JSON.stringify(tasks))
-      setUsers(tasks)
+      setUsers(data)
       setLoader(false)
       // Do something with the list of tasks
     }).catch(error => {
       // handle error
       setLoader(false)
     })
+  }
+  useEffect(() => {
+    getData()
   }, [])
+
+  const getInputAddress = (e) => {
+    setAddress(e.target.value)
+  }
+
+  const handleSubmit =()=>{
+    if(name === "" || email === "" || address === ""){
+      setErrorMessage("All fields are required!")
+    }else{
+      const submitData = {
+        name: name,
+        email: email,
+        address: address
+      }
+      fetch('https://66b08ccf6a693a95b53923eb.mockapi.io/api/users/user_list', {
+        method: 'POST',
+        headers: {'content-type':'application/json'},
+        // Send your data in the request body as JSON
+        body: JSON.stringify(submitData)
+      }).then(res => {
+        if (res.ok) {
+            return res.json();
+        }
+        // handle error
+      }).then(task => {
+        // do something with the new task
+        setShow(false)
+        getData()
+
+      }).catch(error => {
+        // handle error
+        setShow(false)
+      })
+    }
+  
+  }
 
   return (
     <Container fluid="md">
-       <div className='display: flex;  
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Add New Student</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {emessage.length > 0 && <Alert  variant={"danger"}>
+          {emessage}
+        </Alert> }
+          <InputGroup size="sm" className="mb-3">
+            <InputGroup.Text id="inputGroup-sizing-sm">Name</InputGroup.Text>
+            <Form.Control
+              name={"name"}
+              onChange={(e) => {
+                setName(e.target.value)
+                setErrorMessage("")
+              }}
+              aria-label="Small"
+              aria-describedby="inputGroup-sizing-sm"
+            />
+          </InputGroup>
+          <InputGroup size="sm" className="mb-3">
+            <InputGroup.Text id="inputGroup-sizing-sm">Email</InputGroup.Text>
+            <Form.Control
+              onChange={(e) => {
+                setEmail(e.target.value)
+                setErrorMessage("")
+              }}
+              aria-label="Small"
+              aria-describedby="inputGroup-sizing-sm"
+            />
+          </InputGroup>
+          <InputGroup size="sm" className="mb-3">
+            <InputGroup.Text id="inputGroup-sizing-sm">Address</InputGroup.Text>
+            <Form.Control
+              onChange={getInputAddress}
+              aria-label="Small"
+              aria-describedby="inputGroup-sizing-sm"
+            />
+          </InputGroup>
+          <Button size='sm' variant="primary" onClick={handleSubmit} >Submit</Button>
+
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+
+        </Modal.Footer>
+      </Modal>
+      <div className='display: flex;  
     justify-content: center;  
     align-items: center;'>
         <ClipLoader
-        color={"blue"}
-        loading={loading}
-        cssOverride={{display: "block",
-          margin: "0 auto",
-          textAlign: 'center',
-          borderColor: "red"}}
-        size={150}
-        aria-label="Loading Spinner"
-        data-testid="loader"
-      /></div>
+          color={"blue"}
+          loading={loading}
+          cssOverride={{
+            display: "block",
+            margin: "0 auto",
+            textAlign: 'center',
+            borderColor: "red"
+          }}
+          size={150}
+          aria-label="Loading Spinner"
+          data-testid="loader"
+        /></div>
       {users.length > 0 && <Table striped bordered hover>
         <thead>
           <tr>
@@ -61,7 +161,7 @@ export default function Home() {
             <th>Address</th>
           </tr>
         </thead>
-       
+
         <tbody>
           {users?.map((item, index) => <tr key={index}>
             <td>{item.id}</td>
@@ -71,6 +171,7 @@ export default function Home() {
           </tr>)}
         </tbody>
       </Table>}
+      <Button size='sm' variant="primary" onClick={() => setShow(true)}>Add New</Button>
       <Row className='my-4 px-4'>
         <Col md={6}><Image src="https://picsum.photos/700/300" fluid rounded /></Col>
         <Col md={6}>
