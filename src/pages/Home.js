@@ -1,32 +1,31 @@
-import React, { useEffect, useState, CSSProperties } from 'react'
+import React, { useEffect, useState } from 'react'
 import useDocumentTitle from './useDocumentTitle'
 import { Button, Image, Badge, Carousel, Card, Table, Modal, InputGroup, Form, Alert } from 'react-bootstrap'
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ClipLoader from "react-spinners/ClipLoader";
-
-
+import HomeSection1 from '../components/Home/HomeSection1';
+import HomeSection2 from '../components/Home/HomeSection2';
+import HomeSection3 from '../components/Home/HomeSection3';
 
 export default function Home() {
   useDocumentTitle("Home page");
-
-
   let [users, setUsers] = useState([])
-
   let [loading, setLoader] = useState(true)
-
   const [show, setShow] = useState(false);
-
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const [editFlag, setEditFlag] = useState(false);
 
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [address, setAddress] = useState("")
   const [emessage, setErrorMessage] = useState("")
+  const [editId, setEditId] = useState("")
 
-  const getData = () =>{
+  const getData = () => {
     fetch('https://66b08ccf6a693a95b53923eb.mockapi.io/api/users/user_list', {
       method: 'GET',
       headers: { 'content-type': 'application/json' },
@@ -53,10 +52,10 @@ export default function Home() {
     setAddress(e.target.value)
   }
 
-  const handleSubmit =()=>{
-    if(name === "" || email === "" || address === ""){
+  const handleSubmit = () => {
+    if (name === "" || email === "" || address === "") {
       setErrorMessage("All fields are required!")
-    }else{
+    } else {
       const submitData = {
         name: name,
         email: email,
@@ -64,12 +63,12 @@ export default function Home() {
       }
       fetch('https://66b08ccf6a693a95b53923eb.mockapi.io/api/users/user_list', {
         method: 'POST',
-        headers: {'content-type':'application/json'},
+        headers: { 'content-type': 'application/json' },
         // Send your data in the request body as JSON
         body: JSON.stringify(submitData)
       }).then(res => {
         if (res.ok) {
-            return res.json();
+          return res.json();
         }
         // handle error
       }).then(task => {
@@ -82,23 +81,46 @@ export default function Home() {
         setShow(false)
       })
     }
-  
+
+  }
+
+  const deleteHandle = (id) => {
+    console.log("ID " + id)
+    fetch('https://66b08ccf6a693a95b53923eb.mockapi.io/api/users/user_list/' + id, {
+      method: 'DELETE',
+    }).then(res => {
+      if (res.ok) {
+        return res.json();
+      }
+      // handle error
+    }).then(task => {
+      // Do something with deleted task
+      getData();
+    }).catch(error => {
+      // handle error
+      console.log("Error " + JSON.stringify(error))
+    })
+  }
+
+  const handleUpdate = () =>{
+    console.log("edt id "+editId)
   }
 
   return (
     <Container fluid="md">
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Add New Student</Modal.Title>
+          <Modal.Title>{editFlag ? "Update Student": "Add New Student"} </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {emessage.length > 0 && <Alert  variant={"danger"}>
-          {emessage}
-        </Alert> }
+          {emessage.length > 0 && <Alert variant={"danger"}>
+            {emessage}
+          </Alert>}
           <InputGroup size="sm" className="mb-3">
             <InputGroup.Text id="inputGroup-sizing-sm">Name</InputGroup.Text>
             <Form.Control
               name={"name"}
+              value={name}
               onChange={(e) => {
                 setName(e.target.value)
                 setErrorMessage("")
@@ -114,6 +136,7 @@ export default function Home() {
                 setEmail(e.target.value)
                 setErrorMessage("")
               }}
+              value={email}
               aria-label="Small"
               aria-describedby="inputGroup-sizing-sm"
             />
@@ -121,15 +144,17 @@ export default function Home() {
           <InputGroup size="sm" className="mb-3">
             <InputGroup.Text id="inputGroup-sizing-sm">Address</InputGroup.Text>
             <Form.Control
+            value={address}
               onChange={getInputAddress}
               aria-label="Small"
               aria-describedby="inputGroup-sizing-sm"
             />
           </InputGroup>
-          <Button size='sm' variant="primary" onClick={handleSubmit} >Submit</Button>
-
+          
+          {editFlag ? <Button size='sm' variant="primary" onClick={handleUpdate} >Update Submit</Button> : <Button size='sm' variant="primary" onClick={handleSubmit} >Submit</Button>}
         </Modal.Body>
         <Modal.Footer>
+          
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
@@ -159,6 +184,7 @@ export default function Home() {
             <th>Name</th>
             <th>Email</th>
             <th>Address</th>
+            <th>Action</th>
           </tr>
         </thead>
 
@@ -168,96 +194,31 @@ export default function Home() {
             <td>{item.name}</td>
             <td>{item.email}</td>
             <td>{item.address}</td>
+            <td><Button size='sm' variant='primary' onClick={()=>{
+              setName(item.name)
+              setEmail(item.email)
+              setAddress(item.address)
+              setEditFlag(true)
+
+              setEditId(item.id)
+              setShow(true)
+
+            }} >Edit</Button>&nbsp;<Button size='sm' variant='danger' onClick={() => deleteHandle(item.id)}>Delete</Button></td>
           </tr>)}
         </tbody>
       </Table>}
+
+
       <Button size='sm' variant="primary" onClick={() => setShow(true)}>Add New</Button>
-      <Row className='my-4 px-4'>
-        <Col md={6}><Image src="https://picsum.photos/700/300" fluid rounded /></Col>
-        <Col md={6}>
-          <h3>Headline Text Here</h3>
-          <p>Get the same random image every time based on a seed, by adding, Get the same random image every time based on a seed, by adding. Get the same random image every time based on a seed, by adding, Get the same random image every time based on a seed, by adding. Get the same random image every time based on a seed, by adding, Get the same random image every time based on a seed, by adding.</p>
-          <h1><Badge bg="primary">Explore now</Badge></h1>
-        </Col>
-      </Row>
 
-      <Row>
-        <Col md={4}>
-          <Card >
-            <Card.Img variant="top" src="https://picsum.photos/300/130" />
-            <Card.Body>
-              <Card.Title>Card Title</Card.Title>
-              <Card.Text>
-                Some quick example text to build on the card title and make up the
-                bulk of the card's content.
-              </Card.Text>
-              <Button variant="primary">Go somewhere</Button>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={8}>
-          <Carousel>
-            <Carousel.Item>
-              <Image src="https://picsum.photos/900/340" fluid rounded />
-              <Carousel.Caption>
-                <h3>First slide label</h3>
-                <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-              </Carousel.Caption>
-            </Carousel.Item>
+      <HomeSection1 />
+      <HomeSection2 />
+      <HomeSection3 />
 
-            <Carousel.Item>
-              <Image src="https://picsum.photos/900/340" fluid rounded />
-              <Carousel.Caption>
-                <h3>Second slide label</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-              </Carousel.Caption>
-            </Carousel.Item>
-          </Carousel>
-        </Col>
 
-      </Row>
 
-      <Row className='my-5'>
-        <Col md={4}>
-          <Card >
-            <Card.Img variant="top" src="https://picsum.photos/300/130" />
-            <Card.Body>
-              <Card.Title>Card Title</Card.Title>
-              <Card.Text>
-                Some quick example text to build on the card title and make up the
-                bulk of the card's content.
-              </Card.Text>
-              <Button variant="primary">Go somewhere</Button>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={4}>
-          <Card >
-            <Card.Img variant="top" src="https://picsum.photos/300/130" />
-            <Card.Body>
-              <Card.Title>Card Title</Card.Title>
-              <Card.Text>
-                Some quick example text to build on the card title and make up the
-                bulk of the card's content.
-              </Card.Text>
-              <Button variant="primary">Go somewhere</Button>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={4}>
-          <Card >
-            <Card.Img variant="top" src="https://picsum.photos/300/130" />
-            <Card.Body>
-              <Card.Title>Card Title</Card.Title>
-              <Card.Text>
-                Some quick example text to build on the card title and make up the
-                bulk of the card's content.
-              </Card.Text>
-              <Button variant="primary">Go somewhere</Button>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
+
+
       <Row className='my-5'>
 
       </Row>
