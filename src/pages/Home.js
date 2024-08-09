@@ -74,7 +74,11 @@ export default function Home() {
       }).then(task => {
         // do something with the new task
         setShow(false)
-        getData()
+        setName("");
+        setEmail("");
+        setAddress("");
+
+        getData();
 
       }).catch(error => {
         // handle error
@@ -102,15 +106,48 @@ export default function Home() {
     })
   }
 
-  const handleUpdate = () =>{
-    console.log("edt id "+editId)
+  const handleUpdate = () => {
+    //console.log("edt id " + editId)
+    if (name === "" || email === "" || address === "") {
+      setErrorMessage("All fields are required!")
+    } else {
+      const submitData = {
+        name: name,
+        email: email,
+        address: address
+      }
+      fetch('https://66b08ccf6a693a95b53923eb.mockapi.io/api/users/user_list/'+editId, {
+        method: 'PUT',
+        headers: { 'content-type': 'application/json' },
+        // Send your data in the request body as JSON
+        body: JSON.stringify(submitData)
+      }).then(res => {
+        if (res.ok) {
+          return res.json();
+        }
+        // handle error
+      }).then(task => {
+        // do something with the new task
+        setShow(false)
+        setName("");
+        setEmail("");
+        setAddress("");
+        
+        getData();
+
+      }).catch(error => {
+        // handle error
+        setShow(false)
+      })
+    }
+
   }
 
   return (
     <Container fluid="md">
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>{editFlag ? "Update Student": "Add New Student"} </Modal.Title>
+          <Modal.Title>{editFlag ? "Update Student" : "Add New Student"} </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {emessage.length > 0 && <Alert variant={"danger"}>
@@ -144,17 +181,17 @@ export default function Home() {
           <InputGroup size="sm" className="mb-3">
             <InputGroup.Text id="inputGroup-sizing-sm">Address</InputGroup.Text>
             <Form.Control
-            value={address}
+              value={address}
               onChange={getInputAddress}
               aria-label="Small"
               aria-describedby="inputGroup-sizing-sm"
             />
           </InputGroup>
-          
+
           {editFlag ? <Button size='sm' variant="primary" onClick={handleUpdate} >Update Submit</Button> : <Button size='sm' variant="primary" onClick={handleSubmit} >Submit</Button>}
         </Modal.Body>
         <Modal.Footer>
-          
+
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
@@ -194,7 +231,7 @@ export default function Home() {
             <td>{item.name}</td>
             <td>{item.email}</td>
             <td>{item.address}</td>
-            <td><Button size='sm' variant='primary' onClick={()=>{
+            <td><Button size='sm' variant='primary' onClick={() => {
               setName(item.name)
               setEmail(item.email)
               setAddress(item.address)
@@ -209,7 +246,14 @@ export default function Home() {
       </Table>}
 
 
-      <Button size='sm' variant="primary" onClick={() => setShow(true)}>Add New</Button>
+      <Button size='sm' variant="primary" onClick={() => {
+          setName("")
+          setEmail("")
+          setAddress("")
+          setEditFlag(false)
+          setEditId("")
+          setShow(true)
+      }}>Add New</Button>
 
       <HomeSection1 />
       <HomeSection2 />
