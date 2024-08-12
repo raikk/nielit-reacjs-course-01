@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import useDocumentTitle from './useDocumentTitle'
-import { Button, Image, Badge, Carousel, Card, Table, Modal, InputGroup, Form, Alert } from 'react-bootstrap'
+import { Button, Table, Modal, InputGroup, Form, Alert } from 'react-bootstrap'
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import ClipLoader from "react-spinners/ClipLoader";
+
+import { UserModel } from '../components/Home/UserModel';
+import useDocumentTitle from './useDocumentTitle'
 import HomeSection1 from '../components/Home/HomeSection1';
 import HomeSection2 from '../components/Home/HomeSection2';
 import HomeSection3 from '../components/Home/HomeSection3';
@@ -145,59 +146,9 @@ export default function Home() {
 
   return (
     <Container fluid="md">
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>{editFlag ? "Update Student" : "Add New Student"} </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {emessage.length > 0 && <Alert variant={"danger"}>
-            {emessage}
-          </Alert>}
-          <InputGroup size="sm" className="mb-3">
-            <InputGroup.Text id="inputGroup-sizing-sm">Name</InputGroup.Text>
-            <Form.Control
-              name={"name"}
-              value={name}
-              onChange={(e) => {
-                setName(e.target.value)
-                setErrorMessage("")
-              }}
-              aria-label="Small"
-              aria-describedby="inputGroup-sizing-sm"
-            />
-          </InputGroup>
-          <InputGroup size="sm" className="mb-3">
-            <InputGroup.Text id="inputGroup-sizing-sm">Email</InputGroup.Text>
-            <Form.Control
-              onChange={(e) => {
-                setEmail(e.target.value)
-                setErrorMessage("")
-              }}
-              value={email}
-              aria-label="Small"
-              aria-describedby="inputGroup-sizing-sm"
-            />
-          </InputGroup>
-          <InputGroup size="sm" className="mb-3">
-            <InputGroup.Text id="inputGroup-sizing-sm">Address</InputGroup.Text>
-            <Form.Control
-              value={address}
-              onChange={getInputAddress}
-              aria-label="Small"
-              aria-describedby="inputGroup-sizing-sm"
-            />
-          </InputGroup>
 
-          {editFlag ? <Button size='sm' variant="primary" onClick={handleUpdate} >Update Submit</Button> : <Button size='sm' variant="primary" onClick={handleSubmit} >Submit</Button>}
-        </Modal.Body>
-        <Modal.Footer>
-
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-
-        </Modal.Footer>
-      </Modal>
+     <UserModel show={show} handleClose={handleClose} editFlag={editFlag} emessage={emessage} name={name} setName={setName} setErrorMessage={setErrorMessage} setEmail={setEmail} email={email} address={address} getInputAddress={getInputAddress} handleUpdate={handleUpdate} handleSubmit={handleSubmit} />
+     
       <div className='display: flex;  
     justify-content: center;  
     align-items: center;'>
@@ -258,10 +209,6 @@ export default function Home() {
       <HomeSection1 />
       <HomeSection2 />
       <HomeSection3 />
-
-
-
-
 
       <Row className='my-5'>
 
