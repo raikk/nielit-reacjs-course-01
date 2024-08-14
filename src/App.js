@@ -7,6 +7,8 @@ import Blogs from './pages/Blogs';
 import Contact from './pages/Contact';
 import Layout from './pages/Layout';
 import NavigationBar from './components/NavigationBar';
+import Signup from './pages/Signup';
+import Login from './pages/Login';
 function App() {
   return (
     <BrowserRouter>
@@ -18,6 +20,8 @@ function App() {
           <Route index element={<Home />} />
           <Route path="blogs" element={<Blogs />} />
           <Route path="contact" element={<Contact />} />
+          <Route path="signup" element={<Signup />} />
+          <Route path="login" element={<Login />} />
         </Route>
       </Routes>
     </BrowserRouter>
