@@ -1,6 +1,8 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+
 //import { getAnalytics } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -10,6 +12,8 @@ import { getAuth } from "firebase/auth";
 const firebaseConfig = {
   apiKey: "AIzaSyBL5MnzGqZ0IEJ5Lr12HdPWcrkQm5tSomg",
   authDomain: "nielit-course-d6dea.firebaseapp.com",
+  databaseURL: "https://nielit-course-d6dea-default-rtdb.asia-southeast1.firebasedatabase.app/",
+ 
   projectId: "nielit-course-d6dea",
   storageBucket: "nielit-course-d6dea.appspot.com",
   messagingSenderId: "174590292790",
@@ -19,8 +23,10 @@ const firebaseConfig = {
 
 // Initialize Firebase
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-
+export const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app);
 // Initialize Firebase Authentication and get a reference to the service
 export const auth = getAuth(app);
-export default app;
+//export const db = getFirestore(app);
+//export const dbStore =  getDatabase(app);
+ 
