@@ -3,7 +3,7 @@ import { Button, Table, Modal, InputGroup, Form, Alert } from 'react-bootstrap'
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import ClipLoader from "react-spinners/ClipLoader";
-
+import Category from '../components/Home/Category';
 import { UserModel } from '../components/Home/UserModel';
 import useDocumentTitle from './useDocumentTitle'
 import HomeSection1 from '../components/Home/HomeSection1';
@@ -146,6 +146,7 @@ export default function Home() {
 
   return (
     <Container fluid="md">
+      <Category />
 
      <UserModel show={show} handleClose={handleClose} editFlag={editFlag} emessage={emessage} name={name} setName={setName} setErrorMessage={setErrorMessage} setEmail={setEmail} email={email} address={address} getInputAddress={getInputAddress} handleUpdate={handleUpdate} handleSubmit={handleSubmit} />
      

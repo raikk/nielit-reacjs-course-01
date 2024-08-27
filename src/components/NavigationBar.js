@@ -6,10 +6,13 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { auth } from '../firebase';
+import { useDispatch } from 'react-redux';
+import { clearUser } from '../store/userSlice';
 
 function NavigationBar() {
   const [userInfo, setUserInfo] = useState({});
   const [isLogin, setIsLogin] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
 
@@ -42,9 +45,13 @@ function NavigationBar() {
             <Nav.Link as={NavLink} to="/blogs">Blogs</Nav.Link>
             <Nav.Link as={NavLink} to="/contact">Contact Us</Nav.Link>
             <>
-            {isLogin? <><Navbar.Text>{"Hello "+userInfo.email}</Navbar.Text> &nbsp;<button onClick={()=>auth.signOut()}>Sign Out</button></>: <> <Nav.Link as={NavLink} to="/login">Login</Nav.Link>
+            {isLogin? <><Navbar.Text>{"Hello "+userInfo.email}</Navbar.Text> &nbsp;<button onClick={()=>{
+              auth.signOut()
+              dispatch(clearUser())
+              }}>Sign Out</button></>: <> <Nav.Link as={NavLink} to="/login">Login</Nav.Link>
             <Nav.Link as={NavLink} to="/signup">Sign up</Nav.Link></>}
             </>
+            {isLogin && <Nav.Link as={NavLink} to="/orders">Your Orders</Nav.Link> }
            
           </Nav>
         </Navbar.Collapse>

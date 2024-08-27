@@ -3,33 +3,22 @@ import Form from 'react-bootstrap/Form';
 import { Container, Alert } from 'react-bootstrap';
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebase';
+import { registerUser } from '../api/authService';
 function Signup() {
     const navigate = useNavigate();
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('');
     const [emessage, setErrorMessage] = useState('');
 
-    const onSubmit = async (e) => {
+    const onSubmit = async(e) => {
         console.log("hello....")
         e.preventDefault()
-
-        await createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-            // Signed in
-            const user = userCredential.user;
-            console.log(user);
-            navigate("/login")
-            // ...
-        })
-        .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.log(errorCode, errorMessage);
-            setErrorMessage(errorMessage);
-            // ..
-        });
+        const msg = await registerUser(email, password);
+        if(msg.status){
+            navigate("/")
+        }else{
+            setErrorMessage(msg.message)
+        }
     }
     return (
         <Container fluid="md">
@@ -48,7 +37,7 @@ function Signup() {
                     <Form.Label>Password</Form.Label>
                     <Form.Control onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Password" />
                 </Form.Group>
-                {emessage.length > 0 && <Alert variant={"danger"}>
+                {emessage?.length > 0 && <Alert variant={"danger"}>
                         {emessage}
                     </Alert>}
                 <Button
